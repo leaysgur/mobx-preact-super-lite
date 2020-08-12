@@ -9,4 +9,8 @@ module.exports = {
     "prettier/@typescript-eslint",
     "prettier/react",
   ],
+  rules: {
+    "react-hooks/rules-of-hooks": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+  },
 };
