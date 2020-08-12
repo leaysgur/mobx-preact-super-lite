@@ -1,11 +1,10 @@
 # mobx-preact-super-lite
 
 ## TODO
-- useLocalStore/useAsObservableSource
+- useAsObservableSource
   - test, w/ `__DEV__`
-- useForceUpdate
-  - test
-- test: transactions.test.tsx
+- useLocalStore
+  - test, w/ `__DEV__`
 - Fix up README
   - Notes
   - Compare to `mobx-react-lite`
