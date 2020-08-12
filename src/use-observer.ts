@@ -72,7 +72,7 @@ export function useObserver<T>(
 
   const { reaction } = reactionTrackingRef.current!;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore: format for useDebugValue() in React is `format?: (value: T) => any`
+  // @ts-ignore: TODO: format for useDebugValue() in React is `format?: (value: T) => any`
   useDebugValue(reaction, printDebugValue);
 
   useEffect(() => {
