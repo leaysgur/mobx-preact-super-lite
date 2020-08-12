@@ -6,9 +6,9 @@ module.exports = {
         ...config.output,
         globals: {
           preact: "Preact",
-          mobx: "mobx"
-        }
-      }
-    }
-  }
-}
+          mobx: "mobx",
+        },
+      },
+    };
+  },
+};
