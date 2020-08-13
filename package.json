@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Super lightweight Preact bindings for MobX based on Preact 10.x+ and Hooks",
   "main": "dist/index.js",
+  "jsnext:main": "dist/mobxpreactsuperlite.esm.js",
   "module": "dist/mobxpreactsuperlite.esm.js",
+  "unpkg": "dist/mobxpreactsuperlite.umd.production.min.js",
+  "jsdelivr": "dist/mobxpreactsuperlite.umd.production.min.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/*"
@@ -13,7 +16,7 @@
     "lint:es": "eslint . --ext .ts,.tsx",
     "lint:ts": "tsc --noEmit",
     "test": "jest",
-    "build": "tsdx build --format=cjs,esm --tsconfig ./tsconfig.build.json"
+    "build": "tsdx build --name mobxPreactSuperLight --format=cjs,esm,umd --tsconfig ./tsconfig.build.json"
   },
   "keywords": [
     "mobx",
