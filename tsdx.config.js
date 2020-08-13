@@ -5,7 +5,8 @@ module.exports = {
       output: {
         ...config.output,
         globals: {
-          preact: "Preact",
+          preact: "preact",
+          "preact/hooks": "preactHooks",
           mobx: "mobx",
         },
       },
