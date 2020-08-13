@@ -1,6 +1,6 @@
 {
   "name": "mobx-preact-super-lite",
-  "version": "1.0.3",
+  "version": "2.0.7",
   "description": "Super lightweight Preact bindings for MobX based on Preact 10.x+ and Hooks",
   "main": "dist/index.js",
   "jsnext:main": "dist/mobxpreactsuperlite.esm.js",
