@@ -2,9 +2,7 @@
 
 Super lightweight Preact bindings for MobX based on Preact 10.x+ and Hooks.
 
-```
-npm i mobx-preact-super-lite
-```
+[![NPM](https://nodei.co/npm/mobx-preact-super-lite.png)](https://www.npmjs.com/package/mobx-preact-super-lite)
 
 ## Motivation
 
@@ -36,7 +34,7 @@ Roughly speaking, `mobx-preact-super-lite` = `mobx-react-lite` - `observer()` ho
 - \*2 We opt it out automatically.
 
 
-Based `mobx-react-lite` version is `2.0.7`.
+Based `mobx-react-lite` version is aligned and it is `2.0.7` now.
 
 ## API reference
 
