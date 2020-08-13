@@ -16,7 +16,7 @@
     "lint:es": "eslint . --ext .ts,.tsx",
     "lint:ts": "tsc --noEmit",
     "test": "jest",
-    "build": "tsdx build --name mobxPreactSuperLight --format=cjs,esm,umd --tsconfig ./tsconfig.build.json"
+    "build": "tsdx build --name mobxPreactSuperLite --format=cjs,esm,umd --tsconfig ./tsconfig.build.json"
   },
   "keywords": [
     "mobx",
