@@ -2,6 +2,10 @@
 
 Super lightweight Preact bindings for MobX based on Preact 10.x+ and Hooks.
 
+```
+npm i mobx-preact-super-lite
+```
+
 ## Motivation
 
 For now Preact app to use MobX, we need `preact/compat`(not just `preact`) and bundler alias.
