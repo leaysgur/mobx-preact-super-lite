@@ -12,21 +12,21 @@ With this package you can use minimum `preact` package and `mobx-react-lite` API
 
 ## Compatibility
 
-Roughly speaking, `mobx-preact-super-lite` = `mobx-react-lite` - `observer()`.
+Roughly speaking, `mobx-preact-super-lite` = `mobx-react-lite` - `observer()` hoc.
 
-| API                    | mobx-react-lite | mobx-preact-super-lite |
-| ---------------------- |:---------------:|:----------------------:|
-| isUsingStaticRendering |       ✅        |           ✅           |
-| useStaticRendering     |       ✅        |           ✅           |
-| observer               |       ✅        |           *1           | 
-| useObserver            |       ✅        |           ✅           |
-| Observer               |       ✅        |           ✅           |
-| useForceUpdate         |       ✅        |           ✅           |
-| useAsObservableSource  |       ✅        |           ✅           |
-| useLocalStore          |       ✅        |           ✅           |
-| observerBatching       |       ✅        |           *2           |
-| observerBatchingOptOut |       ✅        |           *2           |
-| isObserverBatched      |       ✅        |           *2           |
+| API                      | mobx-react-lite | mobx-preact-super-lite |
+| ------------------------ |:---------------:|:----------------------:|
+| isUsingStaticRendering() |       ✅        |           ✅           |
+| useStaticRendering()     |       ✅        |           ✅           |
+| observer()               |       ✅        |          (*1)          |
+| useObserver()            |       ✅        |           ✅           |
+| \<Observer>               |       ✅        |           ✅           |
+| useForceUpdate()         |       ✅        |           ✅           |
+| useAsObservableSource()  |       ✅        |           ✅           |
+| useLocalStore()          |       ✅        |           ✅           |
+| observerBatching()       |       ✅        |          (*2)          |
+| observerBatchingOptOut() |       ✅        |          (*2)          |
+| isObserverBatched()      |       ✅        |          (*2)          |
 
 - \*1 Original implementation requires `memo()` and `forwardRef()`, it means `preact/compat` is needed.
 - \*2 We opt it out automatically.
@@ -36,4 +36,4 @@ Based `mobx-react-lite` version is `2.0.7`.
 
 ## API reference
 
-See original [repository](https://github.com/mobxjs/mobx-react-lite) or [user guide](https://mobx-react.js.org/).
+See original [repository](https://github.com/mobxjs/mobx-react-lite) and [user guide](https://mobx-react.js.org/).
