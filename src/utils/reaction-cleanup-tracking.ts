@@ -1,5 +1,5 @@
 import { Reaction } from "mobx";
-import { Ref } from "preact/hooks";
+import { RefObject } from "preact";
 
 export interface IReactionTracking {
   /** The Reaction created during first render, which may be leaked */
@@ -47,7 +47,7 @@ export const CLEANUP_TIMER_LOOP_MILLIS = 10_000;
 /**
  * Reactions created by components that have yet to be fully mounted.
  */
-const uncommittedReactionRefs: Set<Ref<IReactionTracking | null>> = new Set();
+const uncommittedReactionRefs: Set<RefObject<IReactionTracking | null>> = new Set();
 
 /**
  * Latest 'uncommitted reactions' cleanup timer handle.
@@ -64,7 +64,7 @@ function ensureCleanupTimerRunning() {
 }
 
 export function scheduleCleanupOfReactionIfLeaked(
-  ref: Ref<IReactionTracking | null>
+  ref: RefObject<IReactionTracking | null>
 ) {
   uncommittedReactionRefs.add(ref);
 
@@ -72,7 +72,7 @@ export function scheduleCleanupOfReactionIfLeaked(
 }
 
 export function recordReactionAsCommitted(
-  reactionRef: Ref<IReactionTracking | null>
+  reactionRef: RefObject<IReactionTracking | null>
 ) {
   uncommittedReactionRefs.delete(reactionRef);
 }

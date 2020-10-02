@@ -1,5 +1,5 @@
 import { $mobx, autorun, observable } from "mobx";
-import { printDebugValue } from "../src/print-debug-value";
+import { printDebugValue } from "../../src/utils/print-debug-value";
 
 test("printDebugValue", () => {
   const money = observable({
@@ -17,6 +17,7 @@ test("printDebugValue", () => {
     }
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const value = (disposer as any)[$mobx];
 
   expect(printDebugValue(value)).toMatchSnapshot();

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as mobx from "mobx";
 import { h } from "preact";
 import { act, render } from "@testing-library/preact";
 
-import { useObserver } from "../src";
+import { useObserver } from "../src/use-observer";
 
 // eslint-disable-next-line jest/no-test-callback
 test("mobx issue 50", (done) => {

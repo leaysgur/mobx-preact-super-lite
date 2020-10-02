@@ -2,8 +2,8 @@ import { VNode } from "preact";
 import { useObserver } from "./use-observer";
 
 interface IObserverProps {
-  children?(): VNode<any>;
-  render?(): VNode<any>;
+  children?(): VNode | null;
+  render?(): VNode | null;
 }
 
 function ObserverComponent({ children, render }: IObserverProps) {
@@ -11,8 +11,10 @@ function ObserverComponent({ children, render }: IObserverProps) {
   if (typeof component !== "function") {
     return null;
   }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useObserver(component);
 }
+
 ObserverComponent.displayName = "Observer";
 
 export { ObserverComponent as Observer };

@@ -1,17 +1,14 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { act, cleanup, render } from "@testing-library/preact";
 import { renderHook } from "@testing-library/preact-hooks";
-import mockConsole from "jest-mock-console";
-import { autorun, configure, observable } from "mobx";
+import { autorun, configure } from "mobx";
 import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
-import {
-  Observer,
-  useAsObservableSource,
-  useLocalStore,
-  useObserver,
-} from "../src";
-import { enableDevEnvironment, resetMobx } from "./utils";
+import { Observer, useLocalObservable } from "../src";
+import { useObserver } from "../src/use-observer";
+import { resetMobx } from "./utils";
 
 afterEach(cleanup);
 afterEach(resetMobx);
@@ -23,8 +20,9 @@ describe("base useAsObservableSource should work", () => {
 
     function Counter({ multiplier }: { multiplier: number }) {
       counterRender++;
-      const observableProps = useAsObservableSource({ multiplier });
-      const store = useLocalStore(() => ({
+      const observableProps = useLocalObservable(() => ({ multiplier }));
+      Object.assign(observableProps, { multiplier });
+      const store = useLocalObservable(() => ({
         count: 10,
         get multiplied() {
           return observableProps.multiplier * this.count;
@@ -90,17 +88,20 @@ describe("base useAsObservableSource should work", () => {
 
     function Counter({ multiplier }: { multiplier: number }) {
       counterRender++;
-      const observableProps = useAsObservableSource({ multiplier });
-      const store = useLocalStore(() => ({
+      const store = useLocalObservable(() => ({
+        multiplier,
         count: 10,
         get multiplied() {
-          return observableProps.multiplier * this.count;
+          return this.multiplier * this.count;
         },
         inc() {
           this.count += 1;
         },
       }));
 
+      useEffect(() => {
+        store.multiplier = multiplier;
+      }, [store, multiplier]);
       return (
         <Observer>
           {() => {
@@ -150,66 +151,7 @@ describe("base useAsObservableSource should work", () => {
     });
     expect(container.querySelector("span")!.innerHTML).toBe("22");
     expect(counterRender).toBe(2);
-    expect(observerRender).toBe(3);
-  });
-
-  it("with observer()", () => {
-    let counterRender = 0;
-
-    const Counter = ({ multiplier }: { multiplier: number }) => {
-      counterRender++;
-
-      const observableProps = useAsObservableSource({ multiplier });
-      const store = useLocalStore(() => ({
-        count: 10,
-        get multiplied() {
-          return observableProps.multiplier * this.count;
-        },
-        inc() {
-          this.count += 1;
-        },
-      }));
-
-      return useObserver(() => (
-        <div>
-          Multiplied count: <span>{store.multiplied}</span>
-          <button id="inc" onClick={store.inc}>
-            Increment
-          </button>
-        </div>
-      ));
-    };
-
-    function Parent() {
-      const [multiplier, setMultiplier] = useState(1);
-
-      return (
-        <div>
-          <Counter multiplier={multiplier} />
-          <button
-            id="incmultiplier"
-            onClick={() => setMultiplier((m) => m + 1)}
-          />
-        </div>
-      );
-    }
-
-    const { container } = render(<Parent />);
-
-    expect(container.querySelector("span")!.innerHTML).toBe("10");
-    expect(counterRender).toBe(1);
-
-    act(() => {
-      (container.querySelector("#inc")! as any).click();
-    });
-    expect(container.querySelector("span")!.innerHTML).toBe("11");
-    expect(counterRender).toBe(2);
-
-    act(() => {
-      (container.querySelector("#incmultiplier")! as any).click();
-    });
-    expect(container.querySelector("span")!.innerHTML).toBe("22");
-    expect(counterRender).toBe(4); // TODO: should be 3
+    expect(observerRender).toBe(4);
   });
 });
 
@@ -219,21 +161,25 @@ test("useAsObservableSource with effects should work", () => {
   const thingsSeenByEffect: Array<[number, number, number]> = [];
 
   function Counter({ multiplier }: { multiplier: number }) {
-    const observableProps = useAsObservableSource({ multiplier });
-    const store = useLocalStore(() => ({
+    const store = useLocalObservable(() => ({
+      multiplier,
       count: 10,
       get multiplied() {
-        return observableProps.multiplier * this.count;
+        return this.multiplier * this.count;
       },
       inc() {
         this.count += 1;
       },
     }));
 
+    useEffect(() => {
+      store.multiplier = multiplier;
+    }, [multiplier]);
+
     useEffect(
       () =>
         autorun(() => {
-          multiplierSeenByEffect.push(observableProps.multiplier);
+          multiplierSeenByEffect.push(store.multiplier);
         }),
       []
     );
@@ -248,7 +194,7 @@ test("useAsObservableSource with effects should work", () => {
       () =>
         autorun(() => {
           thingsSeenByEffect.push([
-            observableProps.multiplier,
+            store.multiplier,
             store.multiplied,
             multiplier,
           ]); // multiplier is trapped!
@@ -296,101 +242,12 @@ test("useAsObservableSource with effects should work", () => {
   ]);
 });
 
-describe("combining observer with props and stores", () => {
-  it("keeps track of observable values", () => {
-    const TestComponent = (props: any) => {
-      const localStore = useLocalStore(() => ({
-        get value() {
-          return props.store.x + 5 * props.store.y;
-        },
-      }));
-
-      return useObserver(() => <div>{localStore.value}</div>);
-    };
-    const store = observable({ x: 5, y: 1 });
-    const { container } = render(<TestComponent store={store} />);
-    const div = container.querySelector("div")!;
-    expect(div.textContent).toBe("10");
-    act(() => {
-      store.y = 2;
-    });
-    expect(div.textContent).toBe("15");
-    act(() => {
-      store.x = 10;
-    });
-    expect(div.textContent).toBe("20");
-  });
-
-  it("allows non-observables to be used if specified as as source", () => {
-    const renderedValues: number[] = [];
-
-    const TestComponent = (props: any) => {
-      const obsProps = useAsObservableSource({ y: props.y });
-      const localStore = useLocalStore(() => ({
-        get value() {
-          return props.store.x + 5 * obsProps.y;
-        },
-      }));
-
-      renderedValues.push(localStore.value);
-      return useObserver(() => <div>{localStore.value}</div>);
-    };
-    const store = observable({ x: 5 });
-    const { container, rerender } = render(
-      <TestComponent store={store} y={1} />
-    );
-    const div = container.querySelector("div")!;
-    expect(div.textContent).toBe("10");
-    rerender(<TestComponent store={store} y={2} />);
-    expect(div.textContent).toBe("15");
-    act(() => {
-      store.x = 10;
-    });
-
-    expect(renderedValues).toEqual([10, 15, 15, 20]); // TODO: should have one 15 less
-
-    // TODO: re-enable this line. When debugging, the correct value is returned from render,
-    // which is also visible with renderedValues, however, querying the dom doesn't show the correct result
-    // possible a bug with @testing-library/react?
-    // expect(container.querySelector("div")!.textContent).toBe("20") // TODO: somehow this change is not visible in the tester!
-  });
-});
-
-it("checks for plain object being passed in", () => {
-  const disable = enableDevEnvironment(); // to catch dev-only errors
-  const restore = mockConsole(); // to ignore React showing caught errors
-  const { result } = renderHook(() => useAsObservableSource(false));
-  expect(result.error).toMatchInlineSnapshot(
-    `[Error: useAsObservableSource expects a plain object as first argument]`
-  );
-  restore();
-  disable();
-});
-
-it("checks for stable shape of object being passed in", async () => {
-  const disable = enableDevEnvironment(); // to catch dev-only errors
-  const restore = mockConsole(); // to ignore React showing caught errors
-  const { result, rerender } = renderHook(
-    (p) => {
-      const obj = p!.second ? { foo: "brr", baz: "new" } : { foo: "baz" };
-      return useAsObservableSource(obj);
-    },
-    { initialProps: { second: false } }
-  );
-  rerender({ second: true });
-  expect(result.error).toMatchInlineSnapshot(
-    `[Error: the shape of objects passed to useAsObservableSource should be stable]`
-  );
-  restore();
-  disable();
-});
-
 describe("enforcing actions", () => {
   it("'never' should work", () => {
     configure({ enforceActions: "never" });
     const { result } = renderHook(() => {
       const [thing, setThing] = useState("world");
-      useAsObservableSource({ hello: thing });
+      useLocalObservable(() => ({ hello: thing }));
       useEffect(() => setThing("react"), []);
     });
     expect(result.error).not.toBeDefined();
@@ -399,7 +256,7 @@ describe("enforcing actions", () => {
     configure({ enforceActions: "observed" });
     const { result } = renderHook(() => {
       const [thing, setThing] = useState("world");
-      useAsObservableSource({ hello: thing });
+      useLocalObservable(() => ({ hello: thing }));
       useEffect(() => setThing("react"), []);
     });
     expect(result.error).not.toBeDefined();
@@ -408,7 +265,7 @@ describe("enforcing actions", () => {
     configure({ enforceActions: "always" });
     const { result } = renderHook(() => {
       const [thing, setThing] = useState("world");
-      useAsObservableSource({ hello: thing });
+      useLocalObservable(() => ({ hello: thing }));
       useEffect(() => setThing("react"), []);
     });
     expect(result.error).not.toBeDefined();

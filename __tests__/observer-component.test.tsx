@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import mockConsole from "jest-mock-console";
 import * as mobx from "mobx";
 import { h } from "preact";

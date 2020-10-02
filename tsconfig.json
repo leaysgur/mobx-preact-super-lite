@@ -20,6 +20,6 @@
     "jsx": "react",
     "jsxFactory": "h"
   },
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "__tests__/**/*"],
   "exclude": ["node_modules"]
 }
