@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/leader22/mobx-preact-super-lite",
   "peerDependencies": {
-    "mobx": "^4.0.0 || ^5.0.0",
+    "mobx": "^6.0.0",
     "preact": "^10.4.0"
   },
   "devDependencies": {
@@ -49,8 +49,8 @@
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.3.0",
     "jest-mock-console": "^1.0.1",
-    "mobx": "^5.15.5",
-    "preact": "^10.4.7",
+    "mobx": "^6.0.0",
+    "preact": "^10.5.3",
     "prettier": "^2.0.5",
     "ts-jest": "^26.2.0",
     "tsdx": "^0.13.2",

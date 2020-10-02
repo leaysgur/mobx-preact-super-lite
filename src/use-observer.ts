@@ -1,39 +1,27 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Reaction } from "mobx";
-import { useRef, useDebugValue, useEffect } from "preact/hooks";
+import { useRef, useEffect, useDebugValue } from "preact/hooks";
 
-import { printDebugValue } from "./print-debug-value";
+import { printDebugValue } from "./utils/print-debug-value";
 import {
   createTrackingData,
   IReactionTracking,
   recordReactionAsCommitted,
   scheduleCleanupOfReactionIfLeaked,
-} from "./reaction-cleanup-tracking";
+} from "./utils/reaction-cleanup-tracking";
 import { isUsingStaticRendering } from "./static-rendering";
-import { useForceUpdate } from "./utils";
-
-export type ForceUpdateHook = () => () => void;
-
-export interface IUseObserverOptions {
-  useForceUpdate?: ForceUpdateHook;
-}
-
-const EMPTY_OBJECT = {};
+import { useForceUpdate } from "./utils/utils";
 
 function observerComponentNameFor(baseComponentName: string) {
   return `observer${baseComponentName}`;
 }
 
-export function useObserver<T>(
-  fn: () => T,
-  baseComponentName = "observed",
-  options: IUseObserverOptions = EMPTY_OBJECT
-): T {
+export function useObserver<T>(fn: () => T, baseComponentName = "observed"): T {
   if (isUsingStaticRendering()) {
     return fn();
   }
 
-  const wantedForceUpdateHook = options.useForceUpdate || useForceUpdate;
-  const forceUpdate = wantedForceUpdateHook();
+  const forceUpdate = useForceUpdate();
 
   // StrictMode/ConcurrentMode/Suspense may mean that our component is
   // rendered and abandoned multiple times, so we need to track leaked
@@ -70,9 +58,7 @@ export function useObserver<T>(
     scheduleCleanupOfReactionIfLeaked(reactionTrackingRef);
   }
 
-  const { reaction } = reactionTrackingRef.current!;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore: TODO: format for useDebugValue() in React is `format?: (value: T) => any`
+  const { reaction } = reactionTrackingRef.current;
   useDebugValue(reaction, printDebugValue);
 
   useEffect(() => {
@@ -106,9 +92,11 @@ export function useObserver<T>(
     }
 
     return () => {
-      reactionTrackingRef.current!.reaction.dispose();
+      reactionTrackingRef.current &&
+        reactionTrackingRef.current.reaction.dispose();
       reactionTrackingRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // render the original component, but have the
@@ -123,8 +111,10 @@ export function useObserver<T>(
       exception = e;
     }
   });
+
   if (exception) {
-    throw exception; // re-throw any exceptions catched during rendering
+    throw exception; // re-throw any exceptions caught during rendering
   }
+
   return rendering;
 }
