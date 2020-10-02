@@ -1,8 +1,7 @@
 module.exports = {
   preset: "ts-jest",
-  testMatch: ["**/?(*.)+(spec|test).ts?(x)"],
-  transform: {
-    "^.+\\.(ts|tsx)$": "ts-jest",
-  },
+  testEnvironment: "jsdom",
   setupFilesAfterEnv: [require.resolve("./jest.setup.js")],
+  verbose: false,
+  coverageDirectory: "coverage",
 };
