@@ -4,13 +4,17 @@ Super lightweight Preact bindings for MobX based on Preact 10.x+ and Hooks.
 
 [![NPM](https://nodei.co/npm/mobx-preact-super-lite.png)](https://www.npmjs.com/package/mobx-preact-super-lite)
 
+Base version is aligned with `mobx-react-lite` version.
+
 ## Motivation
 
 For now Preact app to use MobX, we need `preact/compat`(not just `preact`) and bundler alias.
 
-To avoid them, I've just copied `mobx-react-lite` package and added some tweaks to work with Preact.
+But for bundle size, I want to use MobX with `preact`.
 
-With this package you can use minimum `preact` package and `mobx-react-lite` APIs.
+So, I've just copied `mobx-react-lite` package and added some tweaks.
+
+With this package, you can use minimum `preact` package and limited `mobx-react-lite` APIs.
 
 ## Compatibility
 
@@ -37,8 +41,6 @@ Roughly speaking, `mobx-preact-super-lite` = `mobx-react-lite` - `observer()` ho
 | isObserverBatched()      |       ✅        |          (*2)          |
 
 - \*2 We opt it out automatically.
-
-Version is aligned with `mobx-react-lite` version.
 
 ## API reference
 
